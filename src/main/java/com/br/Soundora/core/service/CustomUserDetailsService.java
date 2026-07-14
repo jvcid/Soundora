@@ -1,5 +1,6 @@
 package com.br.Soundora.core.service;
 
+import com.br.Soundora.core.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,10 +9,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-  // COMPLETAR DEPOIS
+  private final UserRepository userRepository;
+
+  public CustomUserDetailsService(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return null;
+  public UserDetails loadUserByUsername(String email)
+          throws UsernameNotFoundException {
+
+    return userRepository.findByEmail(email)
+            .orElseThrow(() ->
+                    new UsernameNotFoundException(
+                            "Usuário não encontrado: " + email));
   }
 }
